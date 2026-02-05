@@ -1,4 +1,4 @@
-# obfuscator89
+# Obfuscator89
 
 A standalone data obfuscator tool.
 
