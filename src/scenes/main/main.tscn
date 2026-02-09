@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://cllkh4eps7nc2"]
 
+[ext_resource type="Script" uid="uid://d1bohlbhgpwql" path="res://scenes/main/generate_given_name.gd" id="1_hyk8p"]
+
 [sub_resource type="LabelSettings" id="LabelSettings_7dm0k"]
 
 [node name="root" type="Control" unique_id=1939430193]
@@ -36,6 +38,7 @@ theme_override_constants/separation = 8
 [node name="button" type="Button" parent="VBoxContainer/HFlowContainer/generate_given_name" unique_id=113098231]
 layout_mode = 2
 text = "Generate given name"
+script = ExtResource("1_hyk8p")
 
 [node name="output" type="Label" parent="VBoxContainer/HFlowContainer/generate_given_name" unique_id=1334283660]
 layout_mode = 2
