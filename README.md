@@ -2,20 +2,14 @@
 
 A standalone data obfuscator tool.
 
-## Languages and locales
+## Locales
 
-Different data sets support different languages and locales. Languages and
-locales are kept separate when storing the data as the relationship between
-languages and locales is not one to one, but one to many.
-
-### Languages
-
-Languages in the `src/data/` directory hierarchy are expressed in ISO 639-
-format.
+Countries are the primary level of locale distinction. Countries are expressed
+in the ISO 3166-1 alpha-2 code standard.
 
 ## Sources
 
-### Finnish (fin) Names
+### Names used in Finland (FI)
 
 The primary, but not only source of data for Finnish names, both given and
 surnames, has been the open data called "Väestötietojärjestelmän suomalaisten
