@@ -1,8 +1,8 @@
 extends Button
 
 func _ready() -> void:
-	pass
+    pass
 
 
 func _pressed() -> void:
-	print('Virtual pressed function call!')
+    print('Virtual pressed function call!')
