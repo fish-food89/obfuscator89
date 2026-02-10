@@ -6,12 +6,12 @@ extends Node
 
 
 func _ready() -> void:
-	pass # Replace with function body.
-	
+    pass # Replace with function body.
+    
 
 ## Scans the files in the `data/` directory recursively
 ##
 ## While scanning it gathers the files' metadata and stores them to this
 ## singleton.
 func _scan() -> void:
-	pass
+    pass
