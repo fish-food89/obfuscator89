@@ -3,8 +3,8 @@ extends Node
 
 func _ready() -> void:
     pass # Replace with function body.
-    
-    
+
+
 ## Lists all files discovered in the given directory.
 ##
 ## Args:
@@ -19,14 +19,14 @@ func _ready() -> void:
 ##
 ## Returns:
 ##  Error
-static func list_dir_files(
+func list_dir_files(
         path: String,
         files: PackedStringArray,
         recursive: bool = false,
         include_hidden: bool = false
 ) -> Error:
     var dir = DirAccess.open(path)
-    
+
     if not dir:
         var error: Error = DirAccess.get_open_error()
         push_error(
@@ -36,29 +36,38 @@ static func list_dir_files(
             })
         )
         return error
-    
+
     dir.include_hidden = include_hidden
     dir.list_dir_begin()
     var item: String = dir.get_next()
-    
+    var item_path: String
+
     while item:
+        item_path = "/".join([
+            dir.get_current_dir(),
+            item,
+        ])
+
         if recursive and dir.current_is_dir():
             var error: Error = list_dir_files(
-                item,
+                item_path,
                 files,
                 recursive,
                 include_hidden,
             )
-            
+
             if error:
                 push_error(
                     "Error in opening directory: `{item}`. Received Error: {error}".format({
-                        "item": item,
+                        "item": item_path,
                         "error": error,
                     })
                 )
-                
+
         elif not dir.current_is_dir():
-            files.append(item)
-    
+            files.append(item_path)
+
+        item = dir.get_next()
+
+    dir.list_dir_end()
     return Error.OK
