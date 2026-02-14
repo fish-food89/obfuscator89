@@ -5,6 +5,18 @@ func _ready() -> void:
     pass # Replace with function body.
 
 
+func _push_error(
+        path: String,
+        error: Error,
+) -> void:
+    push_error(
+        "Error in opening directory: `{path}`. Received Error: {error}".format({
+            "path": path,
+            "error": error,
+        })
+    )
+
+
 ## Lists all files discovered in the given directory.
 ##
 ## Args:
@@ -29,12 +41,7 @@ func list_dir_files(
 
     if not dir:
         var error: Error = DirAccess.get_open_error()
-        push_error(
-            "Error in opening directory: `{item}`. Received Error: {error}".format({
-                "item": path,
-                "error": error,
-            })
-        )
+        _push_error(path, error)
         return error
 
     dir.include_hidden = include_hidden
@@ -57,12 +64,7 @@ func list_dir_files(
             )
 
             if error:
-                push_error(
-                    "Error in opening directory: `{item}`. Received Error: {error}".format({
-                        "item": item_path,
-                        "error": error,
-                    })
-                )
+                _push_error(item_path, error)
 
         elif not dir.current_is_dir():
             files.append(item_path)
