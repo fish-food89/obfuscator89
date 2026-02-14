@@ -5,4 +5,5 @@ func _ready() -> void:
 
 
 func _pressed() -> void:
-    print('Virtual pressed function call!')
+    var output: Label = self.get_node("../output")
+    output.text = "\n".join(DataFiles._files)
