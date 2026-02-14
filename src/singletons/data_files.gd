@@ -5,13 +5,21 @@ extends Node
 ## and stored by this singleton upon loading the application.
 
 
+var _files: PackedStringArray
+
+
 func _ready() -> void:
-    pass # Replace with function body.
-    
+    _scan()
+
 
 ## Scans the files in the `data/` directory recursively
 ##
 ## While scanning it gathers the files' metadata and stores them to this
 ## singleton.
 func _scan() -> void:
-    pass
+    Utils.list_dir_files(
+        "res://data/",
+        _files,
+        true,
+        false,
+    )
