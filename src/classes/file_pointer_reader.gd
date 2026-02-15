@@ -1,5 +1,5 @@
 class_name FilePointerReader
-extends RefCounted
+extends RefCounted89
 ## A reader which creates `FilePointer´ objects.
 
 const _BUFFER_SIZE: int = 1024
@@ -20,9 +20,10 @@ static func scan(
         var find_pos: int = buffer.find(delimiter, 0)
 
         while find_pos >= 0:
-            var file_pointer: FilePointer = FilePointer.new()
-            file_pointer.start_pos = start_pos
-            file_pointer.end_pos = find_pos + offset
+            var file_pointer: FilePointer = FilePointer.new(
+                start_pos,
+                find_pos + offset,
+            )
             file_pointers.append(file_pointer)
             start_pos = find_pos + 1
             find_pos = buffer.find(delimiter, start_pos)

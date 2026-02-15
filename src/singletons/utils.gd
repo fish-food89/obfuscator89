@@ -4,7 +4,7 @@ extends Node
 
 ## File system related utilities.
 class FileSystem:
-    extends RefCounted
+    extends RefCounted89
 
     static func _push_error(
             path: String,
@@ -74,3 +74,15 @@ class FileSystem:
 
         dir.list_dir_end()
         return Error.OK
+
+
+func set_not_allowed(
+        class_name_: String,
+        variable_name_: String,
+) -> void:
+    push_error(
+        "Setting a value for property `{class_name}.{variable_name}` is not supported!".format({
+            "class_name": class_name_,
+            "variable_name": variable_name_,
+        })
+    )

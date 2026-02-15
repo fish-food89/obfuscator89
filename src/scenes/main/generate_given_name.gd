@@ -18,3 +18,11 @@ func _pressed() -> void:
             "file_path": file_path,
             "metadata": metadata,
         })
+
+        print(metadata.file_pointers[0])
+        metadata.file_pointers[0].start_pos = 1337
+
+    for category in DataFiles.categories:
+        print(category.file_path)
+        category.file_path = "haha"
+        print(category.file_path)
