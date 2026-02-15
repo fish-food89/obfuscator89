@@ -16,7 +16,7 @@ var _category: Dictionary[String, Dictionary] = {
         _FILE_PATH: "names/surnames",
     },
 }
-var _files: Dictionary[String, Variant]
+var _files: Dictionary[String, FileMetadata]
 
 var category: Dictionary[String, Dictionary]:
     get:
