@@ -5,84 +5,40 @@ extends Node
 ## and stored by this singleton upon loading the application.
 
 
-const FILE_PATH_BASE: String = "res://data/"
+const _FILE_PATH: String = "file_path"
+const FILE_PATH_BASE: String = "res://data"
 
-var _categories: Array[Category] = [
-    Category.new(
-        "given_name",
-        "names/given_names",
-    ),
-    Category.new(
-        "surname",
-        "names/surnames",
-    ),
-]
+var _category: Dictionary[String, Dictionary] = {
+    "given_name": {
+        _FILE_PATH: "names/given_names",
+    },
+    "surname": {
+        _FILE_PATH: "names/surnames",
+    },
+}
 var _files: Dictionary[String, Variant]
 
-var categories: Array[Category]:
+var category: Dictionary[String, Dictionary]:
     get:
-        return _categories.duplicate(true)
+        return _category.duplicate(true)
     set(_value):
         Utils.set_not_allowed(
             self.name,
-            "categories",
+            "category",
         )
 
 
-## To be used for categorising data files so that they are logically managed.
-class Category:
-    extends RefCounted89
-
-    static var _wrapping_class_name: String = "":
-        get:
-            return _wrapping_class_name
-        set(value):
-            if not len(_wrapping_class_name):
-                _wrapping_class_name = value
-
-    static var _class_name: String = "Category":
-        get:
-            return "{wrapping_class}.{class_name}".format({
-                "wrapping_class": _wrapping_class_name,
-                "class_name": _class_name,
-            })
-        set(_value):
-            Utils.set_not_allowed(
-                _class_name,
-                "_class_name",
-            )
-
-    var _name: String
-    var _file_path: String
-
-    var name: String:
-        get:
-            return _name
-        set(_value):
-            Utils.set_not_allowed(
-                _class_name,
-                "name",
-            )
-    var file_path: String:
-        get:
-            return _file_path
-        set(_value):
-            Utils.set_not_allowed(
-                _class_name,
-                "file_path",
-            )
-
-    func _init(
-            name_: String,
-            file_path_: String,
-    ) -> void:
-        _name = name_
-        _file_path = file_path_
-
-
 func _ready() -> void:
-    Category._wrapping_class_name = self.name
+    _initialize_category()
     _scan()
+
+
+func _initialize_category() -> void:
+    for value in _category.values():
+        value.file_path = "{base}/{path}".format({
+            "base": FILE_PATH_BASE,
+            "path": value.file_path,
+        })
 
 
 ## Scans the files in the `data/` directory recursively
