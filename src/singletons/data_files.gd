@@ -5,20 +5,29 @@ extends Node
 ## and stored by this singleton upon loading the application.
 
 
-const _FILE_PATH: String = "file_path"
+const _DIRECTORY: String = "directory"
+const _FILES: String = "files"
+const _METADATA: String = "metadata"
+
 const FILE_PATH_BASE: String = "res://data"
 
-var _category: Dictionary[String, Dictionary] = {
-    "given_name": {
-        _FILE_PATH: "names/given_names",
+enum Category {
+    GIVEN_NAME = 1,
+    SURNAME,
+}
+
+var _category: Dictionary[Category, Dictionary] = {
+    Category.GIVEN_NAME: {
+        _DIRECTORY: "names/given_names",
+        _FILES: null,
     },
-    "surname": {
-        _FILE_PATH: "names/surnames",
+    Category.SURNAME: {
+        _DIRECTORY: "names/surnames",
+        _FILES: null,
     },
 }
-var _files: Dictionary[String, FileMetadata]
 
-var category: Dictionary[String, Dictionary]:
+var category: Dictionary[Category, Dictionary]:
     get:
         return _category.duplicate(true)
     set(_value):
@@ -33,11 +42,23 @@ func _ready() -> void:
     _scan()
 
 
+## Returns the [enum Category] the given [param file_path] belongs to if it has
+## been defined. Otherwise it returns [code]null[/code].
+func _find_category(file_path: String) -> Variant:
+    for key in _category.keys():
+        var category_dict: Dictionary = _category[key]
+
+        if file_path.begins_with(category_dict[_DIRECTORY]):
+            return key
+
+    return null
+
+
 func _initialize_category() -> void:
     for value in _category.values():
-        value.file_path = "{base}/{path}".format({
+        value[_DIRECTORY] = "{base}/{path}".format({
             "base": FILE_PATH_BASE,
-            "path": value.file_path,
+            "path": value[_DIRECTORY],
         })
 
 
@@ -56,15 +77,22 @@ func _scan() -> void:
     )
 
     for file_path in _file_paths:
+        var discovered_category: Variant = _find_category(file_path)
+
+        if not discovered_category:
+            continue
+
         var file: FileAccess = FileAccess.open(
             file_path,
             FileAccess.ModeFlags.READ,
         )
         var metadata: FileMetadata = FileMetadata.new()
+        metadata.file_path = file_path
         metadata.length = file.get_length()
         FilePointerReader.scan(
             file,
             "\n",
             metadata.file_pointers,
         )
-        _files[file_path] = metadata
+
+        _category[discovered_category][_FILES] = metadata
