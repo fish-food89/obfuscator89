@@ -18,20 +18,20 @@ class FileSystem:
         )
 
 
-    ## Lists all files discovered in the given directory.
+    ## [b]Lists all files discovered in the given directory.[/b][br][br]
     ##
-    ## Args:
-    ##  path: The file path to the directory.
-    ##  files: The PackedStringArray to which the discovered files' paths are to be
-    ##      stored.
-    ##  recursive: Set this to `true` if you wish to recursively list also the
-    ##      files in the subdirectories of the directory given in `path`.
-    ##  include_hidden: Include hidden files in the results if this is `true`. By
-    ##      default this is set to `false`, so hidden files are not returned in the
-    ##      `files` PackedStringArray by default.
+    ## [b][u]Args:[/u][/b][br][br]
+    ##    - [param path]: The file path to the directory.[br][br]
+    ##    - [param files]: The PackedStringArray to which the discovered files' paths are to be
+    ##        stored.[br][br]
+    ##    - [param recursive]: Set this to `true` if you wish to recursively list also the
+    ##        files in the subdirectories of the directory given in `path`.[br][br]
+    ##    - [param include_hidden]: Include hidden files in the results if this is `true`. By
+    ##        default this is set to `false`, so hidden files are not returned in the
+    ##        `files` PackedStringArray by default.[br][br]
     ##
-    ## Returns:
-    ##  Error
+    ## [b][u]Returns:[/u][/b][br][br]
+    ##    - [enum Error]
     static func list_dir_files(
             path: String,
             files: PackedStringArray,
