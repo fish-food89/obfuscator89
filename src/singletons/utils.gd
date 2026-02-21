@@ -76,6 +76,17 @@ class FileSystem:
         return Error.OK
 
 
+func not_implemented_error() -> void:
+    var calling_function: Dictionary = get_stack()[1]
+    push_error(
+        "NOT IMPLEMENTED ERROR: `{function}` in `{source}` at line `{line}`.".format({
+            "function": calling_function["function"],
+            "source": calling_function["source"],
+            "line": calling_function["line"],
+        })
+    )
+
+
 func set_not_allowed(
         class_name_: String,
         variable_name_: String,
