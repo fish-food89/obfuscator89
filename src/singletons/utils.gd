@@ -2,6 +2,14 @@ extends Node
 ## General utilities.
 
 
+## A custom error enumerator. `OK` is the only member that is shared with the
+## built in `Error` enumerator. Everything else is greater or equal to 89.
+enum Error89 {
+    OK = Error.OK,
+    DOES_NOT_END_WITH_DELIMITER = 89,
+}
+
+
 ## File system related utilities.
 class FileSystem:
     extends RefCounted89

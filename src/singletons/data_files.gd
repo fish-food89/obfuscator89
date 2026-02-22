@@ -8,6 +8,7 @@ extends Node
 const _DIRECTORY: String = "directory"
 const _FILES: String = "files"
 const _METADATA: String = "metadata"
+const _NEWLINE_CHAR: int = 10
 
 const FILE_PATH_BASE: String = "res://data"
 
@@ -67,6 +68,7 @@ func _initialize_category() -> void:
 ## While scanning it gathers the files' metadata and stores them to this
 ## singleton.
 func _scan() -> void:
+    const DELIMITER: int = _NEWLINE_CHAR
     var _file_paths: PackedStringArray
 
     Utils.FileSystem.list_dir_files(
@@ -89,10 +91,48 @@ func _scan() -> void:
         var metadata: FileMetadata = FileMetadata.new()
         metadata.file_path = file_path
         metadata.length = file.get_length()
+
         FilePointerReader.scan(
             file,
-            "\n",
+            DELIMITER,
             metadata.file_pointers,
         )
 
+        if _verify_file_pointers(
+                DELIMITER,
+                file,
+                metadata,
+        ):
+            continue
+
         _category[discovered_category][_FILES] = metadata
+
+
+func _verify_file_pointers(
+        delimiter: int,
+        file: FileAccess,
+        metadata: FileMetadata,
+) -> Utils.Error89:
+    for i in range(metadata.file_pointers.size()):
+        var file_pointer: FilePointer = metadata.file_pointers[i]
+        file.seek(file_pointer.start_pos)
+
+        var buffer: PackedByteArray = file.get_buffer(file_pointer.length)
+
+        if buffer[-1] != delimiter:
+            push_error(
+                (
+                    "Could not find the expected delimiter `{delimiter}` from "
+                    + "the `end_pos` of `{file_pointer}` at index `{index}` of "
+                    + "`{metadata}`. Found `{value}` instead."
+                ).format({
+                    "delimiter": delimiter,
+                    "file_pointer": file_pointer,
+                    "index": i,
+                    "metadata": metadata,
+                    "value": buffer[-1],
+                })
+            )
+            return Utils.Error89.DOES_NOT_END_WITH_DELIMITER
+
+    return Utils.Error89.OK

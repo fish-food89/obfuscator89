@@ -11,27 +11,16 @@ func _pressed() -> void:
         "surname": _get_random_surname(),
     })
 
-    # for file_path in DataFiles._files.keys():
-    #     var metadata: FileMetadata = DataFiles._files[file_path]
 
-    #     if len(output.text):
-    #         output.text += "\n"
-
-    #     output.text += "{file_path}: {metadata}".format({
-    #         "file_path": file_path,
-    #         "metadata": metadata,
-    #     })
-
-    #     print(metadata.file_pointers[0])
+func _remove_last_character(value: String) -> String:
+    return value.substr(0, value.length() - 1)
 
 
-# TODO: IMPLEMENT
 func _get_random_given_name() -> String:
-    Utils.not_implemented_error()
-    return ""
+    var value: String = DataFiles.category[DataFiles.Category.GIVEN_NAME].files.get_random_file_value()
+    return _remove_last_character(value)
 
 
-# TODO: IMPLEMENT
 func _get_random_surname() -> String:
-    Utils.not_implemented_error()
-    return ""
+    var value: String = DataFiles.category[DataFiles.Category.SURNAME].files.get_random_file_value()
+    return _remove_last_character(value)

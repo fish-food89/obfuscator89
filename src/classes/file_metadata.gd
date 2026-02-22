@@ -24,3 +24,13 @@ func _to_string() -> String:
             "file_pointers": len(file_pointers),
             "id": self.get_instance_id(),
         })
+
+
+func get_random_file_value() -> String:
+    var file_pointer: FilePointer = file_pointers.pick_random()
+    var file: FileAccess = FileAccess.open(
+        file_path,
+        FileAccess.ModeFlags.READ,
+    )
+    file.seek(file_pointer.start_pos)
+    return file.get_buffer(file_pointer.length).get_string_from_utf8()

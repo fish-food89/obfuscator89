@@ -17,6 +17,13 @@ var end_pos: int:
     set(_value):
         self._set_not_allowed("end_pos")
 
+var length: int:
+    get:
+        # Offset by + 1 to include the last character in the length.
+        return _end_pos - _start_pos + 1
+    set(_value):
+        self._set_not_allowed("length")
+
 
 func _init(
         start_pos_: int,
