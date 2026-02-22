@@ -1,0 +1,107 @@
+extends Node
+## General utilities.
+
+
+## A custom error enumerator. `OK` is the only member that is shared with the
+## built in `Error` enumerator. Everything else is greater or equal to 89.
+enum Error89 {
+    OK = Error.OK,
+    DOES_NOT_END_WITH_DELIMITER = 89,
+}
+
+
+## File system related utilities.
+class FileSystem:
+    extends RefCounted89
+
+    static func _push_error(
+            path: String,
+            error: Error,
+    ) -> void:
+        push_error(
+            "Error in opening directory: `{path}`. Received Error: {error}".format({
+                "path": path,
+                "error": error,
+            })
+        )
+
+
+    ## [b]Lists all files discovered in the given directory.[/b][br][br]
+    ##
+    ## [b][u]Args:[/u][/b][br][br]
+    ##    - [param path]: The file path to the directory.[br][br]
+    ##    - [param files]: The PackedStringArray to which the discovered files' paths are to be
+    ##        stored.[br][br]
+    ##    - [param recursive]: Set this to `true` if you wish to recursively list also the
+    ##        files in the subdirectories of the directory given in `path`.[br][br]
+    ##    - [param include_hidden]: Include hidden files in the results if this is `true`. By
+    ##        default this is set to `false`, so hidden files are not returned in the
+    ##        `files` PackedStringArray by default.[br][br]
+    ##
+    ## [b][u]Returns:[/u][/b][br][br]
+    ##    - [enum Error]
+    static func list_dir_files(
+            path: String,
+            files: PackedStringArray,
+            recursive: bool = false,
+            include_hidden: bool = false
+    ) -> Error:
+        var dir = DirAccess.open(path)
+
+        if not dir:
+            var error: Error = DirAccess.get_open_error()
+            _push_error(path, error)
+            return error
+
+        dir.include_hidden = include_hidden
+        dir.list_dir_begin()
+        var item: String = dir.get_next()
+        var item_path: String
+
+        while item:
+            item_path = "/".join([
+                dir.get_current_dir(),
+                item,
+            ])
+
+            if recursive and dir.current_is_dir():
+                var error: Error = list_dir_files(
+                    item_path,
+                    files,
+                    recursive,
+                    include_hidden,
+                )
+
+                if error:
+                    return error
+
+            elif not dir.current_is_dir():
+                files.append(item_path)
+
+            item = dir.get_next()
+
+        dir.list_dir_end()
+        return Error.OK
+
+
+func not_implemented_error() -> void:
+    var calling_function: Dictionary = get_stack()[1]
+    push_error(
+        "NOT IMPLEMENTED ERROR: `{function}` in `{source}` at line `{line}`.".format({
+            "function": calling_function["function"],
+            "source": calling_function["source"],
+            "line": calling_function["line"],
+        })
+    )
+
+
+func set_not_allowed(
+        class_name_: String,
+        variable_name_: String,
+) -> void:
+    push_error(
+        "Setting a value for property `{class_name}.{variable_name}` is not supported!".format({
+            "class_name": class_name_,
+            "variable_name": variable_name_,
+        })
+    )

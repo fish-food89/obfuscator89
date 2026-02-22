@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://cllkh4eps7nc2"]
+
+[ext_resource type="Script" uid="uid://d1bohlbhgpwql" path="res://scenes/main/generate_given_name.gd" id="1_hyk8p"]
+[ext_resource type="Script" uid="uid://d4jrnvg6x1c4q" path="res://scenes/main/about.gd" id="1_l3cfh"]
+[ext_resource type="Script" uid="uid://brk2d1wql3mq5" path="res://scenes/main/generate_surname.gd" id="2_iuonh"]
+[ext_resource type="Script" uid="uid://bgufjjqwnu05v" path="res://scenes/main/generate_full_name.gd" id="3_k2fmo"]
+
+[node name="root" type="VBoxContainer" unique_id=2046024768]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MenuBar" type="MenuBar" parent="." unique_id=2009605532]
+layout_mode = 2
+
+[node name="About" type="PopupMenu" parent="MenuBar" unique_id=1683134648]
+oversampling_override = 1.0
+size = Vector2i(524, 100)
+shrink_width = false
+item_count = 1
+item_0/text = "Obfuscator89"
+item_0/id = 0
+item_0/separator = true
+script = ExtResource("1_l3cfh")
+
+[node name="generate_given_name" type="HBoxContainer" parent="." unique_id=357406472]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="button" type="Button" parent="generate_given_name" unique_id=113098231]
+layout_mode = 2
+text = "Generate given name"
+script = ExtResource("1_hyk8p")
+
+[node name="output" type="RichTextLabel" parent="generate_given_name" unique_id=532367243]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+vertical_alignment = 1
+selection_enabled = true
+
+[node name="generate_surname" type="HBoxContainer" parent="." unique_id=173910913]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="button" type="Button" parent="generate_surname" unique_id=137261581]
+layout_mode = 2
+text = "Generate surname"
+script = ExtResource("2_iuonh")
+
+[node name="output" type="RichTextLabel" parent="generate_surname" unique_id=1867485421]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+vertical_alignment = 1
+selection_enabled = true
+
+[node name="generate_full_name" type="HBoxContainer" parent="." unique_id=1368246435]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="button" type="Button" parent="generate_full_name" unique_id=1762937241]
+layout_mode = 2
+text = "Generate full name"
+script = ExtResource("3_k2fmo")
+
+[node name="output" type="RichTextLabel" parent="generate_full_name" unique_id=127229601]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+vertical_alignment = 1
+selection_enabled = true
