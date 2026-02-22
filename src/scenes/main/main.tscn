@@ -1,46 +1,75 @@
 [gd_scene format=3 uid="uid://cllkh4eps7nc2"]
 
 [ext_resource type="Script" uid="uid://d1bohlbhgpwql" path="res://scenes/main/generate_given_name.gd" id="1_hyk8p"]
+[ext_resource type="Script" uid="uid://brk2d1wql3mq5" path="res://scenes/main/generate_surname.gd" id="2_iuonh"]
+[ext_resource type="Script" uid="uid://bgufjjqwnu05v" path="res://scenes/main/generate_full_name.gd" id="3_k2fmo"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_7dm0k"]
-
-[node name="root" type="Control" unique_id=1939430193]
-layout_mode = 3
+[node name="root" type="VBoxContainer" unique_id=2046024768]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1893510227]
-layout_mode = 0
-offset_right = 1280.0
-offset_bottom = 66.0
-theme_override_constants/separation = 8
-
-[node name="MenuBar" type="MenuBar" parent="VBoxContainer" unique_id=2009605532]
+[node name="MenuBar" type="MenuBar" parent="." unique_id=2009605532]
 layout_mode = 2
 
-[node name="File" type="PopupMenu" parent="VBoxContainer/MenuBar" unique_id=1683134648]
+[node name="File" type="PopupMenu" parent="MenuBar" unique_id=1683134648]
 oversampling_override = 1.0
 item_count = 1
 item_0/text = "Foo"
 item_0/id = 0
 
-[node name="HFlowContainer" type="HFlowContainer" parent="VBoxContainer" unique_id=1373255356]
-layout_mode = 2
-
-[node name="generate_given_name" type="HBoxContainer" parent="VBoxContainer/HFlowContainer" unique_id=357406472]
+[node name="generate_given_name" type="HBoxContainer" parent="." unique_id=357406472]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="button" type="Button" parent="VBoxContainer/HFlowContainer/generate_given_name" unique_id=113098231]
+[node name="button" type="Button" parent="generate_given_name" unique_id=113098231]
 layout_mode = 2
 text = "Generate given name"
 script = ExtResource("1_hyk8p")
 
-[node name="output" type="Label" parent="VBoxContainer/HFlowContainer/generate_given_name" unique_id=1334283660]
+[node name="output" type="RichTextLabel" parent="generate_given_name" unique_id=532367243]
 layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
 text = "Jackson"
-label_settings = SubResource("LabelSettings_7dm0k")
+vertical_alignment = 1
+selection_enabled = true
+
+[node name="generate_surname" type="HBoxContainer" parent="." unique_id=173910913]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="button" type="Button" parent="generate_surname" unique_id=137261581]
+layout_mode = 2
+text = "Generate surname"
+script = ExtResource("2_iuonh")
+
+[node name="output" type="RichTextLabel" parent="generate_surname" unique_id=1867485421]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+text = "Jackson"
+vertical_alignment = 1
+selection_enabled = true
+
+[node name="generate_full_name" type="HBoxContainer" parent="." unique_id=1368246435]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="button" type="Button" parent="generate_full_name" unique_id=1762937241]
+layout_mode = 2
+text = "Generate full name"
+script = ExtResource("3_k2fmo")
+
+[node name="output" type="RichTextLabel" parent="generate_full_name" unique_id=127229601]
+layout_mode = 2
+size_flags_horizontal = 3
+focus_mode = 2
+text = "Jackson"
+vertical_alignment = 1
+selection_enabled = true
