@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cllkh4eps7nc2"]
 
 [ext_resource type="Script" uid="uid://d1bohlbhgpwql" path="res://scenes/main/generate_given_name.gd" id="1_hyk8p"]
+[ext_resource type="Script" uid="uid://d4jrnvg6x1c4q" path="res://scenes/main/about.gd" id="1_l3cfh"]
 [ext_resource type="Script" uid="uid://brk2d1wql3mq5" path="res://scenes/main/generate_surname.gd" id="2_iuonh"]
 [ext_resource type="Script" uid="uid://bgufjjqwnu05v" path="res://scenes/main/generate_full_name.gd" id="3_k2fmo"]
 
@@ -14,11 +15,14 @@ grow_vertical = 2
 [node name="MenuBar" type="MenuBar" parent="." unique_id=2009605532]
 layout_mode = 2
 
-[node name="File" type="PopupMenu" parent="MenuBar" unique_id=1683134648]
+[node name="About" type="PopupMenu" parent="MenuBar" unique_id=1683134648]
 oversampling_override = 1.0
+size = Vector2i(524, 100)
 item_count = 1
-item_0/text = "Foo"
+item_0/text = "Obfuscator89"
 item_0/id = 0
+item_0/separator = true
+script = ExtResource("1_l3cfh")
 
 [node name="generate_given_name" type="HBoxContainer" parent="." unique_id=357406472]
 layout_mode = 2
