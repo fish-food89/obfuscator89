@@ -84,6 +84,17 @@ class FileSystem:
         return Error.OK
 
 
+## Returns the names of all of the autoloaded nodes.
+func get_autoload_names() -> PackedStringArray:
+    var autoload_names: PackedStringArray
+
+    for property in ProjectSettings.get_property_list():
+        if property.name.begins_with("autoload/"):
+            autoload_names.append(property.name.split("/")[1])
+
+    return autoload_names
+
+
 func not_implemented_error() -> void:
     var calling_function: Dictionary = get_stack()[1]
     push_error(
