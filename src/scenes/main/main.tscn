@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://cllkh4eps7nc2"]
 
+[ext_resource type="Script" uid="uid://tu2vgwwpc5hv" path="res://scenes/main/file_dialog.gd" id="1_hujxm"]
 [ext_resource type="Script" uid="uid://d1bohlbhgpwql" path="res://scenes/main/generate_given_name.gd" id="1_hyk8p"]
 [ext_resource type="Script" uid="uid://d4jrnvg6x1c4q" path="res://scenes/main/about.gd" id="1_l3cfh"]
 [ext_resource type="Script" uid="uid://brk2d1wql3mq5" path="res://scenes/main/generate_surname.gd" id="2_iuonh"]
@@ -13,6 +14,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="FileDialog" type="FileDialog" parent="." unique_id=1666143946]
+oversampling_override = 1.0
+initial_position = 2
+script = ExtResource("1_hujxm")
 
 [node name="MenuBar" type="MenuBar" parent="." unique_id=2009605532]
 layout_mode = 2
