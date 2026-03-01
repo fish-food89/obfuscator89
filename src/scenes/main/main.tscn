@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://bgufjjqwnu05v" path="res://scenes/main/generate_full_name.gd" id="3_k2fmo"]
 [ext_resource type="Script" uid="uid://c63txuv4vnoip" path="res://scenes/main/load_file.gd" id="5_6q06x"]
 [ext_resource type="Script" uid="uid://dbxy8bfq0jhge" path="res://scenes/main/select_output_dir.gd" id="6_ow5a4"]
+[ext_resource type="Script" uid="uid://dakg5wbgseof5" path="res://scenes/main/process_files.gd" id="8_yyfjg"]
 [ext_resource type="PackedScene" uid="uid://b6lp7k5lgdl0w" path="res://scenes/error_dialog/error_dialog.tscn" id="9_b1x3f"]
 
 [node name="Base" type="VBoxContainer" unique_id=2046024768]
@@ -108,6 +109,20 @@ text = "Select output directory"
 script = ExtResource("6_ow5a4")
 
 [node name="Output" type="RichTextLabel" parent="SelectOutputDir" unique_id=1716731944]
+layout_mode = 2
+size_flags_horizontal = 3
+fit_content = true
+vertical_alignment = 1
+
+[node name="ProcessFiles" type="HBoxContainer" parent="." unique_id=834887219]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="ProcessFiles" unique_id=76653030]
+layout_mode = 2
+text = "Process loaded files"
+script = ExtResource("8_yyfjg")
+
+[node name="Output" type="RichTextLabel" parent="ProcessFiles" unique_id=1800773286]
 layout_mode = 2
 size_flags_horizontal = 3
 fit_content = true
