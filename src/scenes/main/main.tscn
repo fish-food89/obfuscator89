@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://brk2d1wql3mq5" path="res://scenes/main/generate_surname.gd" id="2_iuonh"]
 [ext_resource type="Script" uid="uid://bgufjjqwnu05v" path="res://scenes/main/generate_full_name.gd" id="3_k2fmo"]
 [ext_resource type="Script" uid="uid://c63txuv4vnoip" path="res://scenes/main/load_file.gd" id="5_6q06x"]
+[ext_resource type="Script" uid="uid://dbxy8bfq0jhge" path="res://scenes/main/select_output_dir.gd" id="6_ow5a4"]
 
 [node name="Base" type="VBoxContainer" unique_id=2046024768]
 anchors_preset = 15
@@ -86,6 +87,20 @@ text = "Load files"
 script = ExtResource("5_6q06x")
 
 [node name="Output" type="RichTextLabel" parent="LoadFiles" unique_id=671931557]
+layout_mode = 2
+size_flags_horizontal = 3
+fit_content = true
+vertical_alignment = 1
+
+[node name="SelectOutputDir" type="HBoxContainer" parent="." unique_id=1062630558]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="SelectOutputDir" unique_id=1771392244]
+layout_mode = 2
+text = "Select output directory"
+script = ExtResource("6_ow5a4")
+
+[node name="Output" type="RichTextLabel" parent="SelectOutputDir" unique_id=1716731944]
 layout_mode = 2
 size_flags_horizontal = 3
 fit_content = true
