@@ -25,6 +25,10 @@ Utils="*uid://ej64igggdml2"
 
 window/size/viewport_height=720
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
