@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://b6lp7k5lgdl0w"]
+
+[node name="ErrorDialog" type="AcceptDialog" unique_id=762914989]
+oversampling_override = 1.0
+title = "Error!"
+initial_position = 2
+visible = true
+transient = false
+always_on_top = true
+ok_button_text = "Close"
+dialog_autowrap = true
