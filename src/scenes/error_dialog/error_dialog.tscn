@@ -6,6 +6,8 @@
 oversampling_override = 1.0
 title = "Error!"
 initial_position = 2
+size = Vector2i(500, 100)
+visible = true
 transient = false
 always_on_top = true
 ok_button_text = "Close"
