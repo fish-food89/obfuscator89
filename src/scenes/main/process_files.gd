@@ -10,6 +10,11 @@ func _pressed() -> void:
 
     for file_path in _get_file_paths():
         i += 1
+
+        if not FileAccess.file_exists(file_path):
+            _file_does_not_exist_error(file_path)
+            break
+
         _process_file(file_path)
 
     if not i:
@@ -20,6 +25,23 @@ func _process_file(file_path: String) -> void:
     if not _get_output_dir():
         _no_output_dir_error()
         return
+
+    var file: FileAccess = FileAccess.open(
+        file_path,
+        FileAccess.ModeFlags.READ,
+    )
+
+
+func _file_does_not_exist_error(file_path: String) -> void:
+    _get_error_dialog().error(
+        " ".join([
+            "No file exists at the path pointed to by:",
+            '"{file_path}".\n',
+            "Aborting file processing.",
+        ]).format({
+            "file_path": file_path,
+        })
+    )
 
 
 func _get_error_dialog() -> AcceptDialog:
