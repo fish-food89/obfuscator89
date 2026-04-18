@@ -2,6 +2,15 @@ extends Node
 ## General utilities.
 
 
+## An enumerator for storing integer values of characters.
+##
+## Especially necessary when using the FilePointerReader as that operates with
+## bytes instead of strings.
+enum Char89 {
+    NEWLINE = 10,
+}
+
+
 ## A custom error enumerator. `OK` is the only member that is shared with the
 ## built in `Error` enumerator. Everything else is greater or equal to 89.
 enum Error89 {
