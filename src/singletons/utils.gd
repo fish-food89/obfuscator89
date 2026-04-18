@@ -23,12 +23,21 @@ enum Error89 {
 class FileSystem:
     extends RefCounted89
 
+    ## File system object type "enumerator" intended for debugging purposes.
+    class ObjectType:
+        extends RefCounted89
+
+        const DIRECTORY = "directory"
+        const FILE = "file"
+
     static func _push_error(
+            object_type: String,
             path: String,
             error: Error,
     ) -> void:
         push_error(
-            "Error in opening directory: `{path}`. Received Error: {error}".format({
+            "Error in opening {object_type}: `{path}`. Received Error: {error}".format({
+                "object_type": object_type,
                 "path": path,
                 "error": error,
             })
@@ -55,11 +64,16 @@ class FileSystem:
             recursive: bool = false,
             include_hidden: bool = false
     ) -> Error:
-        var dir = DirAccess.open(path)
+        # var dir = DirAccess.open(path)
+        var dir = DirAccess.open("KAKKAPÄÄAPINA")
 
         if not dir:
             var error: Error = DirAccess.get_open_error()
-            _push_error(path, error)
+            _push_error(
+                ObjectType.DIRECTORY,
+                path,
+                error,
+            )
             return error
 
         dir.include_hidden = include_hidden
