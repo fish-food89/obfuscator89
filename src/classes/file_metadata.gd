@@ -112,14 +112,22 @@ func _to_string() -> String:
         })
 
 
+func get_file_value(
+        file: FileAccess,
+        file_pointer: FilePointer,
+) -> String:
+    file.seek(file_pointer.start_pos)
+    return file.get_buffer(file_pointer.length).get_string_from_utf8()
+
+
+
 func get_random_file_value() -> String:
     var file_pointer: FilePointer = file_pointers.pick_random()
     var file: FileAccess = FileAccess.open(
         file_path,
         FileAccess.ModeFlags.READ,
     )
-    file.seek(file_pointer.start_pos)
-    return file.get_buffer(file_pointer.length).get_string_from_utf8()
+    return get_file_value(file, file_pointer)
 
 
 ## Checks the file pointers for errors[br]
