@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 DataFiles="*uid://dsdynku7lj7re"
 Utils="*uid://ej64igggdml2"
+ErrorDialog="*uid://b6lp7k5lgdl0w"
 
 [display]
 

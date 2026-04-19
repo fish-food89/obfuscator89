@@ -33,19 +33,15 @@ func _process_file(file_path: String) -> void:
 
 
 func _file_does_not_exist_error(file_path: String) -> void:
-    _get_error_dialog().error(
-        " ".join([
-            "No file exists at the path pointed to by:",
+    ErrorDialog.error(
+        "".join([
+            "No file exists at the path pointed to by: ",
             '"{file_path}".\n',
             "Aborting file processing.",
         ]).format({
             "file_path": file_path,
         })
     )
-
-
-func _get_error_dialog() -> AcceptDialog:
-    return self.get_node(_ERROR_DIALOG_PATH)
 
 
 func _get_file_paths() -> PackedStringArray:
@@ -65,7 +61,7 @@ func _get_select_output_dir_buttion() -> Button89:
 
 
 func _no_loaded_files_error() -> void:
-    _get_error_dialog().error(
+    ErrorDialog.error(
         " ".join([
             "No loaded files to process!",
             "Make sure you have selected files with the",
@@ -77,7 +73,7 @@ func _no_loaded_files_error() -> void:
 
 
 func _no_output_dir_error() -> void:
-    _get_error_dialog().error(
+    ErrorDialog.error(
         " ".join([
             "No output directory has been specified for the processed files.",
             "Make sure you have defined an output directory with the",
