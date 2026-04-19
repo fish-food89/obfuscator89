@@ -64,8 +64,7 @@ class FileSystem:
             recursive: bool = false,
             include_hidden: bool = false
     ) -> Error:
-        # var dir = DirAccess.open(path)
-        var dir = DirAccess.open("KAKKAPÄÄAPINA")
+        var dir = DirAccess.open(path)
 
         if not dir:
             var error: Error = DirAccess.get_open_error()
