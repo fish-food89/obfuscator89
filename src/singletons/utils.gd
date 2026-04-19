@@ -35,7 +35,7 @@ class FileSystem:
             path: String,
             error: Error,
     ) -> void:
-        push_error(
+        ErrorDialog.error(
             "Error in opening {object_type}: `{path}`. Received Error: {error}".format({
                 "object_type": object_type,
                 "path": path,
@@ -120,7 +120,7 @@ func get_autoload_names() -> PackedStringArray:
 
 func not_implemented_error() -> void:
     var calling_function: Dictionary = get_stack()[1]
-    push_error(
+    ErrorDialog.error(
         "NOT IMPLEMENTED ERROR: `{function}` in `{source}` at line `{line}`.".format({
             "function": calling_function["function"],
             "source": calling_function["source"],
@@ -133,7 +133,7 @@ func set_not_allowed(
         class_name_: String,
         variable_name_: String,
 ) -> void:
-    push_error(
+    ErrorDialog.error(
         "Setting a value for property `{class_name}.{variable_name}` is not supported!".format({
             "class_name": class_name_,
             "variable_name": variable_name_,

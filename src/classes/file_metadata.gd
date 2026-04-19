@@ -81,7 +81,7 @@ func _push_file_open_error(
         file_path_: String,
         error: Error,
 ) -> void:
-    push_error(
+    ErrorDialog.error(
         "Could not open `{file_path}`! Received Error value `{error}`.".format({
             "file_path": file_path_,
             "error": error,
@@ -148,7 +148,7 @@ func _get__file_pointer_error() -> int:
         var buffer: PackedByteArray = file.get_buffer(file_pointer.length)
 
         if buffer[-1] != file_pointer_delimiter:
-            push_error(
+            ErrorDialog.error(
                 (
                     "Could not find the expected delimiter `{delimiter}` from "
                     + "the `end_pos` of `{file_pointer}` at index `{index}` of "
