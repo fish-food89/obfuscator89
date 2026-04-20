@@ -1,13 +1,6 @@
 class_name FileMetadata
 extends RefCounted89
-## [b]A class which stores file metadata.[/b][br]
-##
-## [b][u]Args:[/u][/b][br][br]
-##    - [param file_path_]: The file path to the file whose metadata is to be
-##        processed.[br]
-##    - [param file_pointer_delimiter_]: The delimiter which is to be used when
-##        generating file pointers for the file. By default this is `null` in
-##        which case no file pointers will be generated for the file.[br]
+## A class which stores file metadata.
 
 ## The length of the file in bytes.
 var length: int:
@@ -31,8 +24,6 @@ var file_pointer_delimiter: int:
         _set_not_allowed("file_pointer_delimiter")
 
 ## Tells if there are some errors with `file_pointers`.
-##
-##
 var file_pointer_error:
     get:
         return _get__file_pointer_error()
@@ -53,6 +44,12 @@ var _file_pointer_delimiter: int
 var _file_pointers: Array[FilePointer]
 
 
+## [b][u]Args:[/u][/b][br][br]
+##    - [param file_path_]: The file path to the file whose metadata is to be
+##        processed.[br]
+##    - [param file_pointer_delimiter_]: The delimiter which is to be used when
+##        generating file pointers for the file. By default this is `null` in
+##        which case no file pointers will be generated for the file.[br]
 func _init(
         file_path_: String,
         file_pointer_delimiter_: int = Utils.Char89.NEWLINE,
@@ -75,6 +72,7 @@ func _init(
         file_pointer_delimiter,
         _file_pointers,
     )
+    var _file_pointer_error = file_pointer_error
 
 
 func _push_file_open_error(
@@ -112,22 +110,70 @@ func _to_string() -> String:
         })
 
 
-func get_file_value(
-        file: FileAccess,
-        file_pointer: FilePointer,
-) -> String:
-    file.seek(file_pointer.start_pos)
-    return file.get_buffer(file_pointer.length).get_string_from_utf8()
-
-
-
-func get_random_file_value() -> String:
-    var file_pointer: FilePointer = file_pointers.pick_random()
+## Returns the value of the file from the place pointed to by the FilePointer
+## passed through the `file_pointer` argument as a UTF-8 encoded PackedByteArray.[br][br]
+##
+## [b][u]Returns:[/u][/b][br]
+##     - [PackedByteArray] when successful.[br]
+##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful and
+##         opens the [code]ErrorDialog[/code] singleton with an error message.
+func get_file_value_buffer(file_pointer: FilePointer) -> Variant:
     var file: FileAccess = FileAccess.open(
         file_path,
         FileAccess.ModeFlags.READ,
     )
-    return get_file_value(file, file_pointer)
+
+    if not file:
+        Utils.FileSystem.path_open_error(
+            Utils.FileSystemObjectType.FILE,
+            file_path,
+            FileAccess.get_open_error(),
+        )
+        return Utils.Error89.PATH_OPEN_ERROR
+
+    file.seek(file_pointer.start_pos)
+    return file.get_buffer(file_pointer.length)
+
+
+## Returns the value of the file from the place pointed to by the FilePointer
+## passed through the `file_pointer` argument as a String.[br][br]
+##
+## [b][u]Returns:[/u][/b][br]
+##     - [String] when successful.[br]
+##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful.
+##         opens the [code]ErrorDialog[/code] singleton with an error message.
+func get_file_value(file_pointer: FilePointer) -> Variant:
+    var value: Variant = get_file_value_buffer(file_pointer)
+
+    if value is Utils.Error89:
+        return value
+
+    return value.get_string_from_utf8()
+
+
+## Returns a random value from the file as UTF-8 encoded PackedByteArray.[br][br]
+##
+## [b][u]Returns:[/u][/b][br]
+##     - [PackedByteArray] when successful.[br]
+##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful.
+##         opens the [code]ErrorDialog[/code] singleton with an error message.
+func get_random_file_value_buffer() -> Variant:
+    var file_pointer: FilePointer = file_pointers.pick_random()
+    return get_file_value_buffer(file_pointer)
+
+
+## Returns a random value from the file as String.[br][br]
+##
+## Returns the value of the file from the place pointed to by the FilePointer
+## passed through the `file_pointer` argument as a String.[br]
+##
+## [b][u]Returns:[/u][/b][br]
+##     - [String] when successful.[br]
+##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful.
+##         opens the [code]ErrorDialog[/code] singleton with an error message.
+func get_random_file_value() -> Variant:
+    var file_pointer: FilePointer = file_pointers.pick_random()
+    return get_file_value(file_pointer)
 
 
 ## Checks the file pointers for errors[br]
