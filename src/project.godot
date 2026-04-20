@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Obfuscator89"
-config/version="0.0.0"
+config/version="0.1.0"
 run/main_scene="uid://cllkh4eps7nc2"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -20,11 +20,15 @@ config/icon="res://icon.svg"
 
 DataFiles="*uid://dsdynku7lj7re"
 Utils="*uid://ej64igggdml2"
+ErrorDialog="*uid://b6lp7k5lgdl0w"
 
 [display]
 
 window/size/viewport_height=720
-window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [physics]
 

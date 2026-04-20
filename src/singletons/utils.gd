@@ -2,11 +2,45 @@ extends Node
 ## General utilities.
 
 
+## An enumerator for storing integer values of characters in UTF-8 encoded format
+##
+## Especially necessary when using the FilePointerReader as that operates with
+## bytes instead of strings.
+enum Char89 {
+    NEWLINE = 10,
+    SPACE = 32,
+}
+
+
 ## A custom error enumerator. `OK` is the only member that is shared with the
 ## built in `Error` enumerator. Everything else is greater or equal to 89.
 enum Error89 {
+    ## No error
     OK = Error.OK,
+    ## A string or byte array does not end with the expected delimiter
     DOES_NOT_END_WITH_DELIMITER = 89,
+    ## A directory does not exist in the file system
+    DIRECTORY_DOES_NOT_EXIST,
+    ## An array which was not expected to be empty was empty
+    EMPTY_ARRAY,
+    ## A String which was not expected to be empty was empty
+    EMPTY_STRING,
+    ## A file does not exist in the file system
+    FILE_DOES_NOT_EXIST,
+    ## The opening of an input file for data ingestion had an error
+    INPUT_FILE_OPEN_ERROR,
+    ## No file pointers were found, but were expected
+    NO_FILE_POINTERS,
+    ## No files were assigned as input files, but were expected
+    NO_LOADED_FILES,
+    ## No output directory has been assigned
+    NO_OUTPUT_DIRECTORY,
+    ## The opening of an output file for data exportation had an error
+    OUTPUT_FILE_OPEN_ERROR,
+    ## An error happened when opening a file or directory in the file system
+    PATH_OPEN_ERROR,
+    ## An error occurred when storing data to an output file during exportation
+    SAVING_TO_OUTPUT_FILE_ERROR,
 }
 
 
@@ -14,12 +48,21 @@ enum Error89 {
 class FileSystem:
     extends RefCounted89
 
-    static func _push_error(
+    ## File system object type "enumerator" intended for debugging purposes.
+    class ObjectType:
+        extends RefCounted89
+
+        const DIRECTORY = "directory"
+        const FILE = "file"
+
+    static func path_open_error(
+            object_type: String,
             path: String,
             error: Error,
     ) -> void:
-        push_error(
-            "Error in opening directory: `{path}`. Received Error: {error}".format({
+        ErrorDialog.error(
+            "Error in opening {object_type}: `{path}`. Received Error: {error}".format({
+                "object_type": object_type,
                 "path": path,
                 "error": error,
             })
@@ -50,7 +93,11 @@ class FileSystem:
 
         if not dir:
             var error: Error = DirAccess.get_open_error()
-            _push_error(path, error)
+            path_open_error(
+                ObjectType.DIRECTORY,
+                path,
+                error,
+            )
             return error
 
         dir.include_hidden = include_hidden
@@ -84,9 +131,20 @@ class FileSystem:
         return Error.OK
 
 
+## Returns the names of all of the autoloaded nodes.
+func get_autoload_names() -> PackedStringArray:
+    var autoload_names: PackedStringArray
+
+    for property in ProjectSettings.get_property_list():
+        if property.name.begins_with("autoload/"):
+            autoload_names.append(property.name.split("/")[1])
+
+    return autoload_names
+
+
 func not_implemented_error() -> void:
     var calling_function: Dictionary = get_stack()[1]
-    push_error(
+    ErrorDialog.error(
         "NOT IMPLEMENTED ERROR: `{function}` in `{source}` at line `{line}`.".format({
             "function": calling_function["function"],
             "source": calling_function["source"],
@@ -99,7 +157,7 @@ func set_not_allowed(
         class_name_: String,
         variable_name_: String,
 ) -> void:
-    push_error(
+    ErrorDialog.error(
         "Setting a value for property `{class_name}.{variable_name}` is not supported!".format({
             "class_name": class_name_,
             "variable_name": variable_name_,

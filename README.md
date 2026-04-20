@@ -27,3 +27,6 @@ there any promise in opening up contributions in the future. It is up to the
 sole discretion of the maintainer whether or not to take in contributions to
 the project.
 
+## Unit Tests
+
+Unit tests have been done with the Godot Unit Test (GUT) 9.6.0.

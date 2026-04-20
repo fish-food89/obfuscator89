@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b6lp7k5lgdl0w"]
+
+[ext_resource type="Script" uid="uid://1kvrs4m0vgey" path="res://scenes/error_dialog/error_dialog.gd" id="1_47jy8"]
+
+[node name="ErrorDialog" type="AcceptDialog" unique_id=762914989]
+oversampling_override = 1.0
+title = "Error!"
+initial_position = 2
+size = Vector2i(500, 100)
+visible = true
+transient = false
+always_on_top = true
+ok_button_text = "Close"
+dialog_autowrap = true
+script = ExtResource("1_47jy8")
