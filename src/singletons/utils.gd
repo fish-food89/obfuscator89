@@ -12,38 +12,6 @@ enum Char89 {
 }
 
 
-## A custom error enumerator. `OK` is the only member that is shared with the
-## built in `Error` enumerator. Everything else is greater or equal to 89.
-enum Error89 {
-    ## No error
-    OK = Error.OK,
-    ## A string or byte array does not end with the expected delimiter
-    DOES_NOT_END_WITH_DELIMITER = 89,
-    ## A directory does not exist in the file system
-    DIRECTORY_DOES_NOT_EXIST,
-    ## An array which was not expected to be empty was empty
-    EMPTY_ARRAY,
-    ## A String which was not expected to be empty was empty
-    EMPTY_STRING,
-    ## A file does not exist in the file system
-    FILE_DOES_NOT_EXIST,
-    ## The opening of an input file for data ingestion had an error
-    INPUT_FILE_OPEN_ERROR,
-    ## No file pointers were found, but were expected
-    NO_FILE_POINTERS,
-    ## No files were assigned as input files, but were expected
-    NO_LOADED_FILES,
-    ## No output directory has been assigned
-    NO_OUTPUT_DIRECTORY,
-    ## The opening of an output file for data exportation had an error
-    OUTPUT_FILE_OPEN_ERROR,
-    ## An error happened when opening a file or directory in the file system
-    PATH_OPEN_ERROR,
-    ## An error occurred when storing data to an output file during exportation
-    SAVING_TO_OUTPUT_FILE_ERROR,
-}
-
-
 ## File system related utilities.
 class FileSystem:
     extends RefCounted89
@@ -129,6 +97,101 @@ class FileSystem:
 
         dir.list_dir_end()
         return Error.OK
+
+
+static func _find_array_error(
+        source: Array,
+        what: Array,
+        from: int,
+) -> Error89.Code:
+    if not source:
+        return Error89.Code.SOURCE_IS_EMPTY
+    if not what:
+        return Error89.Code.WHAT_IS_EMPTY
+    if len(source) < len(what):
+        return Error89.Code.SOURCE_IS_SMALLER
+    if from < 0:
+        return Error89.Code.INDEX_IS_LESS_THAN_ZERO
+    return Error89.Code.OK
+
+
+## Searches for the position of the first element of `what` from `source`[br]
+##
+## [b][u]Args:[/u][/b]
+##     - [param source]: The array to which the search is conducted.[br]
+##     - [param what]: The array that is being search from from the [param source].[br]
+##     - [param from]: The index from which to being the searching from.[br]
+##
+## [b][u]Returns:[/u][/b][br]
+##     - >= 0: The index of `source` from which the first element of `what` was
+##         found from when staring the discovery from the index given through the
+##         argument `from`.
+##     - -1: The first element of `what` was not discovered from `source`.
+static func _find_array_first_element(
+        source: Array,
+        what: Array,
+        from: int,
+) -> int:
+    var index: int = source.find(what[0], from)
+
+    if index == null:
+        return -1
+    return index
+
+
+## Searches for the first occurrence of an array from an array[br]
+##
+## Works like the `find()` method of arrays, but instead of looking a single
+## object it searches for an array of objects from the source array.[br]
+##
+## [b][u]Args:[/u][/b][br]
+##     - [param source]: The array to which the search is conducted.[br]
+##     - [param what]: The array that is being search from from the [param source].[br]
+##     - [param from]: The index from which to being the searching from.[br]
+##
+## [b][u]Returns:[/u][/b][br]
+##     - FindArrayResult
+func find_array(
+        source: Array,
+        what: Array,
+        from: int,
+) -> FindArrayResult:
+    var result: FindArrayResult = FindArrayResult.new()
+
+    result.error = _find_array_error(source, what, from)
+
+    if result.error:
+        return result
+
+    var source_index: int = _find_array_first_element(source, what, from)
+
+    if source_index == -1:
+        result.error = Error89.Code.WHAT_NOT_FOUND
+        return result
+
+    # We can set the discoery point once we've found the first element.
+    result.index = source_index
+
+    # No need to go to the for loop if the length of the array we are looking for
+    # is 1.
+    if len(what) == 1:
+        return result
+
+    # Index `0` has already been checked for when calling `_find_array_first_element()`
+    # above. Therefore we start the range from `1` so that we don't lose of the
+    # correct track of processed indices.
+    for i in range(1, len(what)):
+        var next_source_index: int = source_index + i
+
+        if next_source_index == len(source):
+            result.error = Error89.Code.WHAT_CUT_SHORT
+            return result
+
+        if source[next_source_index] != what[i]:
+            result.error = Error89.Code.WHAT_NOT_FOUND
+            return result
+
+    return result
 
 
 ## Returns the names of all of the autoloaded nodes.

@@ -82,7 +82,10 @@ func _scan() -> void:
         if not discovered_category:
             continue
 
-        var metadata: FileMetadata = FileMetadata.new(file_path, Utils.Char89.NEWLINE)
+        var metadata: FileMetadata = FileMetadata.new(
+            file_path,
+            PackedByteArray([Utils.Char89.NEWLINE]),
+        )
 
         if metadata.file_pointer_error:
             continue

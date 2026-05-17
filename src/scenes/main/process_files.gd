@@ -5,18 +5,18 @@ const _LOAD_FILES_NODE_PATH = "../../LoadFiles/Button"
 const _SELECT_OUTPUT_DIR_NODE_PATH = "../../SelectOutputDir/Button"
 
 ## Holds the most recent error that occurred in the instance
-var error: Utils.Error89:
+var error: Error89.Code:
     get:
         return _error
     set(_value):
         Utils.set_not_allowed(self.name, "error")
 
 
-var _error: Utils.Error89 = Utils.Error89.OK
+var _error: Error89.Code = Error89.Code.OK
 
 
 func _pressed() -> void:
-    _error = Utils.Error89.OK
+    _error = Error89.Code.OK
 
     if _validation_error():
         return
@@ -33,12 +33,15 @@ func _pressed() -> void:
         #       inputting UTF-8 character codes should be added as well for
         #       even finer control. These codes could be parsed from the user
         #       input.
-        _process_file(file_path, Utils.Char89.NEWLINE)
+        _process_file(
+            file_path,
+            PackedByteArray([Utils.Char89.NEWLINE]),
+        )
 
 
 func _process_file(
         input_file_path: String,
-        file_pointer_delimiter: int,
+        file_pointer_delimiter: PackedByteArray,
 ) -> void:
     var metadata: FileMetadata = _get_input_file_metadata(
         input_file_path,
@@ -65,7 +68,7 @@ func _process_file(
             file_pointer,
         )
 
-        if value is Utils.Error89:
+        if value is Error89.Code:
             _error = value
             break
 
@@ -75,7 +78,7 @@ func _process_file(
 
 
 func _directory_does_not_exist_error(file_path: String) -> void:
-    _error = Utils.Error89.DIRECTORY_DOES_NOT_EXIST
+    _error = Error89.Code.DIRECTORY_DOES_NOT_EXIST
     ErrorDialog.error(
         "".join([
             "No directory exists at the path pointed to by: ",
@@ -88,7 +91,7 @@ func _directory_does_not_exist_error(file_path: String) -> void:
 
 
 func _file_does_not_exist_error(file_path: String) -> void:
-    _error = Utils.Error89.FILE_DOES_NOT_EXIST
+    _error = Error89.Code.FILE_DOES_NOT_EXIST
     ErrorDialog.error(
         "".join([
             "No file exists at the path pointed to by: ",
@@ -102,7 +105,7 @@ func _file_does_not_exist_error(file_path: String) -> void:
 
 ## [b][u]Returns:[/u][/b][br]
 ##     - [PackedByteArray] when successful.[br]
-##     - [member Utils.Error89][code].INPUT_FILE_OPEN_ERROR[/code] when unsucessful and
+##     - [member Error89.Code][code].INPUT_FILE_OPEN_ERROR[/code] when unsucessful and
 ##         opens the [code]ErrorDialog[/code] singleton with an error message.
 func _generate_output_value(
         obfuscation_map: Dictionary[PackedByteArray, PackedByteArray],
@@ -111,8 +114,8 @@ func _generate_output_value(
 ) -> Variant:
     var input_value: Variant = input_file.get_file_value_buffer(file_pointer)
 
-    if input_value is Utils.Error89:
-        return Utils.Error89.INPUT_FILE_OPEN_ERROR
+    if input_value is Error89.Code:
+        return Error89.Code.INPUT_FILE_OPEN_ERROR
 
     var value = obfuscation_map.get(input_value)
 
@@ -135,9 +138,12 @@ func _get_file_paths() -> PackedStringArray:
 
 func _get_input_file_metadata(
         input_file_path: String,
-        file_pointer_delimiter: int,
+        file_pointer_delimiter: PackedByteArray,
 ) -> Variant:
-    var metadata: FileMetadata = FileMetadata.new(input_file_path, file_pointer_delimiter)
+    var metadata: FileMetadata = FileMetadata.new(
+        input_file_path,
+        file_pointer_delimiter,
+    )
 
     if not metadata.file_pointers:
         _no_file_pointers_error(metadata)
@@ -181,7 +187,7 @@ func _get_select_output_dir_buttion() -> Button89:
 
 
 func _no_file_pointers_error(input_file: FileMetadata) -> void:
-    _error = Utils.Error89.NO_FILE_POINTERS
+    _error = Error89.Code.NO_FILE_POINTERS
     ErrorDialog.error(
         "".join([
             "Cannot process the file!\n",
@@ -195,7 +201,7 @@ func _no_file_pointers_error(input_file: FileMetadata) -> void:
 
 
 func _no_loaded_files_error() -> void:
-    _error = Utils.Error89.NO_LOADED_FILES
+    _error = Error89.Code.NO_LOADED_FILES
     ErrorDialog.error(
         " ".join([
             "No loaded files to process!",
@@ -208,7 +214,7 @@ func _no_loaded_files_error() -> void:
 
 
 func _no_output_dir_error() -> void:
-    _error = Utils.Error89.NO_OUTPUT_DIRECTORY
+    _error = Error89.Code.NO_OUTPUT_DIRECTORY
     ErrorDialog.error(
         " ".join([
             "No output directory has been specified for the processed files.",
@@ -224,7 +230,7 @@ func _output_file_open_error(
         file_path: String,
         error_: Error,
 ) -> void:
-    _error = Utils.Error89.OUTPUT_FILE_OPEN_ERROR
+    _error = Error89.Code.OUTPUT_FILE_OPEN_ERROR
     Utils.FileSystem.path_open_error(
         Utils.FileSystem.ObjectType.FILE,
         file_path,
@@ -236,7 +242,7 @@ func _saving_to_output_file_error(
         file_path: String,
         value: PackedByteArray,
 ) -> void:
-    _error = Utils.Error89.SAVING_TO_OUTPUT_FILE_ERROR
+    _error = Error89.Code.SAVING_TO_OUTPUT_FILE_ERROR
     ErrorDialog.error(
         'Problem saving "{value}" to "{file_path}"!'.format({
             "value": value.get_string_from_utf8(),
@@ -245,7 +251,7 @@ func _saving_to_output_file_error(
     )
 
 
-func _validation_error() -> Utils.Error89:
+func _validation_error() -> Error89.Code:
     if not _get_file_paths():
         _no_loaded_files_error()
     elif not _get_output_dir():
