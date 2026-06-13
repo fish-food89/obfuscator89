@@ -46,6 +46,7 @@ static func _delimiter_cut_short(
         latest_index = cut_short_result.index
         error = cut_short_result.error
 
+    # TODO: Use a class instead of an array to return values.
     return [error, buffer_loads]
 
 
