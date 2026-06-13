@@ -17,7 +17,7 @@ var file_path: String:
         _set_not_allowed("file_path")
 
 ## The delimiter used when generating file pointers.
-var file_pointer_delimiter: int:
+var file_pointer_delimiter: PackedByteArray:
     get:
         return _file_pointer_delimiter
     set(_value):
@@ -40,7 +40,7 @@ var file_pointers: Array[FilePointer]:
 
 var _length: int
 var _file_path: String
-var _file_pointer_delimiter: int
+var _file_pointer_delimiter: PackedByteArray
 var _file_pointers: Array[FilePointer]
 
 
@@ -52,7 +52,7 @@ var _file_pointers: Array[FilePointer]
 ##        which case no file pointers will be generated for the file.[br]
 func _init(
         file_path_: String,
-        file_pointer_delimiter_: int = Utils.Char89.NEWLINE,
+        file_pointer_delimiter_: PackedByteArray,
 ) -> void:
     _file_path = file_path_
     _file_pointer_delimiter = file_pointer_delimiter_
@@ -115,7 +115,7 @@ func _to_string() -> String:
 ##
 ## [b][u]Returns:[/u][/b][br]
 ##     - [PackedByteArray] when successful.[br]
-##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful and
+##     - [member Error89.Code][code].PATH_OPEN_ERROR[/code] when unsucessful and
 ##         opens the [code]ErrorDialog[/code] singleton with an error message.
 func get_file_value_buffer(file_pointer: FilePointer) -> Variant:
     var file: FileAccess = FileAccess.open(
@@ -129,7 +129,7 @@ func get_file_value_buffer(file_pointer: FilePointer) -> Variant:
             file_path,
             FileAccess.get_open_error(),
         )
-        return Utils.Error89.PATH_OPEN_ERROR
+        return Error89.Code.PATH_OPEN_ERROR
 
     file.seek(file_pointer.start_pos)
     return file.get_buffer(file_pointer.length)
@@ -140,12 +140,12 @@ func get_file_value_buffer(file_pointer: FilePointer) -> Variant:
 ##
 ## [b][u]Returns:[/u][/b][br]
 ##     - [String] when successful.[br]
-##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful.
+##     - [member Error89.Code][code].PATH_OPEN_ERROR[/code] when unsucessful.
 ##         opens the [code]ErrorDialog[/code] singleton with an error message.
 func get_file_value(file_pointer: FilePointer) -> Variant:
     var value: Variant = get_file_value_buffer(file_pointer)
 
-    if value is Utils.Error89:
+    if value is Error89.Code:
         return value
 
     return value.get_string_from_utf8()
@@ -155,7 +155,7 @@ func get_file_value(file_pointer: FilePointer) -> Variant:
 ##
 ## [b][u]Returns:[/u][/b][br]
 ##     - [PackedByteArray] when successful.[br]
-##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful.
+##     - [member Error89.Code][code].PATH_OPEN_ERROR[/code] when unsucessful.
 ##         opens the [code]ErrorDialog[/code] singleton with an error message.
 func get_random_file_value_buffer() -> Variant:
     var file_pointer: FilePointer = file_pointers.pick_random()
@@ -169,7 +169,7 @@ func get_random_file_value_buffer() -> Variant:
 ##
 ## [b][u]Returns:[/u][/b][br]
 ##     - [String] when successful.[br]
-##     - [member Utils.Error89][code].PATH_OPEN_ERROR[/code] when unsucessful.
+##     - [member Error89.Code][code].PATH_OPEN_ERROR[/code] when unsucessful.
 ##         opens the [code]ErrorDialog[/code] singleton with an error message.
 func get_random_file_value() -> Variant:
     var file_pointer: FilePointer = file_pointers.pick_random()
@@ -179,8 +179,8 @@ func get_random_file_value() -> Variant:
 ## Checks the file pointers for errors[br]
 ##
 ## [b][u]Returns:[/u][/b][br]
-##     - `Utils.Error89.OK`: All clear. No errors discovered.[br]
-##     - `Utils.Error89.DOES_NOT_END_WITH_DELIMITER`: This is returned if a
+##     - `Error89.Code.OK`: All clear. No errors discovered.[br]
+##     - `Error89.Code.DOES_NOT_END_WITH_DELIMITER`: This is returned if a
 ##         file pointer does not end with the correct delimiter.[br]
 ##     - `Error`: A value of the `Error` enum is returned if some error occurred
 ##         in opening the file for file pointer verification.
@@ -200,9 +200,10 @@ func _get__file_pointer_error() -> int:
         file.seek(file_pointer.start_pos)
 
         var buffer: PackedByteArray = file.get_buffer(file_pointer.length)
+        var buffer_delimiter: PackedByteArray = buffer.slice(-len(file_pointer_delimiter))
 
-        if buffer[-1] != file_pointer_delimiter:
-            ErrorDialog.error(
+        if buffer_delimiter != file_pointer_delimiter:
+            var error_message: String = (
                 (
                     "Could not find the expected delimiter `{delimiter}` from "
                     + "the `end_pos` of `{file_pointer}` at index `{index}` of "
@@ -215,6 +216,7 @@ func _get__file_pointer_error() -> int:
                     "value": buffer[-1],
                 })
             )
-            return Utils.Error89.DOES_NOT_END_WITH_DELIMITER
+            printerr(error_message)
+            return Error89.Code.DOES_NOT_END_WITH_DELIMITER
 
-    return Utils.Error89.OK
+    return Error89.Code.OK
