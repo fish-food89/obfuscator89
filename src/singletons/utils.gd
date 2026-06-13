@@ -139,6 +139,21 @@ static func _find_array_first_element(
     return index
 
 
+## Returns `true` if the logic determines that `what` was not found.
+## `false is returned as a complement of that logic.
+static func _find_array__what_not_found__source_index(
+        source_index: int,
+        previous_error: Error89.Code,
+) -> bool:
+    if source_index == -1:
+        return true
+
+    if source_index > 0 and previous_error == Error89.Code.WHAT_CUT_SHORT:
+        return true
+
+    return false
+
+
 ## Searches for the first occurrence of an array from an array[br]
 ##
 ## Works like the `find()` method of arrays, but instead of looking a single
@@ -155,6 +170,7 @@ func find_array(
         source: Array,
         what: Array,
         from: int,
+        previous_error: Error89.Code,
 ) -> FindArrayResult:
     var result: FindArrayResult = FindArrayResult.new()
 
@@ -165,7 +181,7 @@ func find_array(
 
     var source_index: int = _find_array_first_element(source, what, from)
 
-    if source_index == -1:
+    if _find_array__what_not_found__source_index(source_index, previous_error):
         result.error = Error89.Code.WHAT_NOT_FOUND
         return result
 

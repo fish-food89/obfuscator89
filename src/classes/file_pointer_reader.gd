@@ -21,27 +21,32 @@ static func _get_end_position(
     )
 
 
+## Continues reading from the file while the delimiter hasn't been fully read.
 static func _delimiter_cut_short(
         file: FileAccess,
         delimiter: PackedByteArray,
         buffer: PackedByteArray,
         latest_index: int,
         error: Error89.Code,
-) -> Error89.Code:
+) -> Array[Variant]:
+    var buffer_loads: int = 0
     var discovered_delimiter_length: int = 0
 
     while error == Error89.Code.WHAT_CUT_SHORT:
         discovered_delimiter_length += len(buffer) - latest_index
         buffer = file.get_buffer(_BUFFER_SIZE)
+        buffer_loads += 1
+        var remaining_delimiter: PackedByteArray = delimiter.slice(discovered_delimiter_length)
         var cut_short_result: FindArrayResult = Utils.find_array(
             buffer,
-            delimiter.slice(discovered_delimiter_length),
+            remaining_delimiter,
             0,
+            error,
         )
         latest_index = cut_short_result.index
         error = cut_short_result.error
 
-    return error
+    return [error, buffer_loads]
 
 
 ## Scans the given file for file pointers based on the given delimiter.
@@ -61,26 +66,32 @@ static func scan(
         var buffer: PackedByteArray = file.get_buffer(_BUFFER_SIZE)
         buffer_loads += 1
 
-        var find_pos: FindArrayResult = Utils.find_array(buffer, delimiter, 0)
+        var find_pos: FindArrayResult = Utils.find_array(buffer, delimiter, 0, error)
         var latest_index: int = find_pos.index
         error = find_pos.error
 
-        # The delimiter was not found in the buffer. It is possible it exists in
-        # a buffer that comes along later so we continue scanning buffers with
-        # the hopes of finding a delimiter.
-        if error == Error89.Code.WHAT_NOT_FOUND:
-            continue
-
         if error == Error89.Code.WHAT_CUT_SHORT:
-            error = _delimiter_cut_short(
+            var cut_short_result: Array[Variant] = _delimiter_cut_short(
                 file,
                 delimiter,
                 buffer,
                 latest_index,
                 error,
             )
+            error = cut_short_result[0]
 
-        if error != Error89.Code.OK:
+            if error == Error89.Code.WHAT_NOT_FOUND:
+                buffer_loads += cut_short_result[1]
+                error = Error89.Code.OK
+                continue
+
+        # The delimiter was not found in the buffer. It is possible it exists in
+        # a buffer that comes along later so we continue scanning buffers with
+        # the hopes of finding a delimiter.
+        if error == Error89.Code.WHAT_NOT_FOUND:
+            error = Error89.Code.OK
+            continue
+        elif error != Error89.Code.OK:
             return error
 
         var end_pos: int = _get_end_position(

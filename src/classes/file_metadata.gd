@@ -73,7 +73,6 @@ func _init(
         _file_pointers,
     )
     var _file_pointer_error = file_pointer_error
-    print_debug(_file_pointer_error)
 
 
 func _push_file_open_error(
@@ -204,7 +203,7 @@ func _get__file_pointer_error() -> int:
         var buffer_delimiter: PackedByteArray = buffer.slice(-len(file_pointer_delimiter))
 
         if buffer_delimiter != file_pointer_delimiter:
-            ErrorDialog.error(
+            var error_message: String = (
                 (
                     "Could not find the expected delimiter `{delimiter}` from "
                     + "the `end_pos` of `{file_pointer}` at index `{index}` of "
@@ -217,6 +216,7 @@ func _get__file_pointer_error() -> int:
                     "value": buffer[-1],
                 })
             )
+            printerr(error_message)
             return Error89.Code.DOES_NOT_END_WITH_DELIMITER
 
     return Error89.Code.OK
