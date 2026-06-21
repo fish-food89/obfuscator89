@@ -1,5 +1,5 @@
 extends GutTest
-## Tests the  Utils.find_array_first_element()` function.
+## Tests the `ArrayTools.find_array_first_element()` function.
 
 
 var sunny_day_parameters: Array = self.ParameterFactory.named_parameters(
