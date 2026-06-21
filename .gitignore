@@ -7,9 +7,6 @@
 export.cfg
 export_credentials.cfg
 
-# Godot addons/plugins not to be tracked by Git
-src/addons/gut/
-
 # Imported translations (automatically generated from CSV files)
 *.translation
 
